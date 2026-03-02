@@ -19,7 +19,7 @@ MarcosWalkie es una aplicación de Push-To-Talk (PTT) diseñada para centralizar
 
 ¡Bienvenido! Si no quieres complicarte la vida, sigue estos pasos:
 
-1. **Instalación:** Debido a que el archivo supera el límite de GitHub (100MB), no puedo subirlo directamente al repositorio. Puedes compilarlo tú mismo usando `flutter build apk --debug` o pedirme que lo genere de nuevo si lo borras.
+1. **Instalación:** Simplemente descarga el archivo `supermarcoswalkie.apk` que verás en la raíz de este repositorio. Cópialo a tu móvil Android e instálalo. ¡Listo!
 2. **Abrir la app:** Busca el icono de **MarcosWalkie** y ábrelo.
 3. **Configurar el Micro USB (Importante):**
    - Si tienes un micrófono o botón USB, verás un icono de un **enchufe** (🔌) arriba a la derecha. Dale ahí.
@@ -39,3 +39,5 @@ MarcosWalkie es una aplicación de Push-To-Talk (PTT) diseñada para centralizar
 
 ---
 *Desarrollado con ❤️ por PGM y PEDROAI.*
+
+
