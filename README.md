@@ -26,14 +26,18 @@ MarcosWalkie es una aplicación de Push-To-Talk (PTT) diseñada para centralizar
    - Pulsa "MAPEAR" en el botón de hablar, y presiona el botón físico de tu micro.
    - Pulsa "MAPEAR" en el botón de soltar, y suelta el botón de tu micro.
    - ¡Ya está! Ahora la app sabe qué botón usar.
-4. **Perfiles:**
-   - La app usa "perfiles" para saber a qué app de Walkie Talkie debe enviar la señal.
+4. **Perfiles (Donde se configuran los PRIVADOS/INTENTS):**
+   - La app usa "perfiles" para saber a qué app de Walkie Talkie debe enviar la señal. **Aquí es donde incluyes los "Intents" (comandos internos)** que quieres llamar para cada aplicación.
    - Dale al icono del **engranaje** (⚙️) para crear o editar uno.
-   - Solo tienes que poner el nombre y las "acciones" que te diga el manual de tu otra app (ej: Zello).
+   - Solo tienes que poner el nombre y las "acciones" (los Intents) que te diga el manual de tu otra app (ej: Zello).
 5. **A hablar:**
    - En la pantalla principal, selecciona el perfil que quieras.
    - Mantén pulsado el **círculo grande central** para hablar, o usa tu botón USB.
-   - Si quieres usarlo mientras usas otras apps, dale a **"BOTÓN FLOTANTE"**.
+   - **Botón Flotante (Para usar con otras apps):**
+     - La primera vez que le des a "BOTÓN FLOTANTE", el móvil te llevará a una pantalla de ajustes para pedirte **permisos de superposición**. 
+     - Busca **MarcosWalkie** en la lista y activa el interruptor para darle permiso.
+     - Vuelve atrás a la aplicación y dale otra vez al botón.
+     - ¡Magia! Aparecerá una burbuja que **puedes mover con el dedo** por toda la pantalla y usarla mientras estás en Zello u otras aplicaciones.
 
 ¡Y ya está! No tiene más pérdida. Si sale un recuadro amarillo, no te asustes, ya lo hemos arreglado para que quepa todo bien.
 
