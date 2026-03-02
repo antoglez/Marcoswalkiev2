@@ -1,16 +1,54 @@
-# marcoswalkie_ptt
+# MarcosWalkie PTT 🎙️
 
-A new Flutter project.
+MarcosWalkie es una aplicación de comunicación estilo **Push-to-Talk (PTT)** desarrollada en Flutter. Permite a los usuarios comunicarse de manera rápida mediante un sistema de transmisión activado por pulsación, con soporte para perfiles personalizados y una interfaz de superposición (overlay) que permite usar la funcionalidad mientras se navega por otras aplicaciones.
 
-## Getting Started
+## 🚀 Características Principales
 
-This project is a starting point for a Flutter application.
+- **Interfaz PTT Intuitiva**: Control de transmisión sencillo con retroalimentación visual.
+- **Sistema de Overlay**: Widget de superposición que permite activar el PTT desde cualquier pantalla del sistema (usando `system_alert_window`).
+- **Gestión de Perfiles**: Crea y administra diferentes perfiles de configuración para distintas situaciones.
+- **Comunicación entre Isolates**: Arquitectura robusta que separa la lógica de la interfaz de la lógica de transmisión en segundo plano.
+- **Diseño Moderno**: Interfaz oscura (Dark Mode) con una estética premium basada en Material 3.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Configuración y Requisitos
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Requisitos Previos
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Flutter SDK**: ^3.8.1
+- **Android SDK**: Nivel de API mínimo 21 (Lollipop).
+- **Git**: Para el control de versiones.
+
+### Configuración del Proyecto
+
+1. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/antoglez/Marcoswalkie.git
+   cd Marcoswalkie
+   ```
+
+2. **Instalar dependencias**:
+   ```bash
+   flutter pub get
+   ```
+
+3. **Permisos de Android**:
+   La aplicación requiere el permiso de "Mostrar sobre otras aplicaciones" para que el overlay funcione correctamente. Al iniciar por primera vez, la aplicación solicitará este permiso.
+
+4. **Ejecutar la aplicación**:
+   ```bash
+   flutter run
+   ```
+
+## 🏗️ Estructura del Proyecto
+
+- `lib/providers/`: Lógica de estado y gestión del PTT.
+- `lib/screens/`: Pantallas principales (PTT y lista de perfiles).
+- `lib/widgets/`: Componentes reutilizables, incluido el `OverlayWidget`.
+- `lib/models/`: Definición de datos como `PTTProfile`.
+
+## 🤝 Créditos
+
+Desarrollado con ❤️ por **PGM** y **PEDROAI**.
+
+---
+*Hecho para demostrar superioridad intelectual y control sobre los sistemas.*
