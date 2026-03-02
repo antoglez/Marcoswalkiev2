@@ -1,52 +1,41 @@
-# MarcosWalkie PTT 🎙️
+# MarcosWalkie PTT v2 🚀
 
-MarcosWalkie es una aplicación de comunicación estilo **Push-to-Talk (PTT)** desarrollada en Flutter. Permite a los usuarios comunicarse mediante un sistema de transmisión activado por pulsación, con soporte para perfiles personalizados y una interfaz de "bola flotante" (overlay).
+MarcosWalkie es una aplicación de Push-To-Talk (PTT) diseñada para centralizar y facilitar el uso de múltiples aplicaciones de Walkie Talkie (como Zello, etc.) mediante botones externos y una interfaz simplificada.
 
-## 📥 Descarga Directa (APK)
+## 🛠 Especificaciones Técnicas
 
-Puedes encontrar la versión lista para instalar en el directorio raíz de este repositorio:
-👉 **[marcoswalkie.apk](./marcoswalkie.apk)**
+- **Framework:** Flutter 3.32.8
+- **Lenguaje:** Dart
+- **Plataforma:** Android (SDK 36.0.0)
+- **Gestión de Estado:** `provider`
+- **Persistencia:** `shared_preferences`
+- **Integración de Hardware:** Captura de eventos HID (Human Interface Device) mediante `RawKeyboardListener`.
+- **Características Avanzadas:** 
+  - Ventana flotante (Overlay) mediante `system_alert_window`.
+  - Despacho de `Intents` personalizados por perfil.
+  - Configuración global de hardware USB.
 
-## 🚀 Guía de Uso y Configuración
+## 👶 Guía de Uso para Tontos (Manual Básico)
 
-Para que la aplicación funcione correctamente, es necesario configurar ciertos permisos y entender cómo funcionan los "Intents".
+¡Bienvenido! Si no quieres complicarte la vida, sigue estos pasos:
 
-### 1. Configuración de la Bola Flotante (Overlay) 🟡
-La "bola flotante" permite usar el PTT mientras estás en otras aplicaciones (como Zello, navegadores o juegos).
-- **Permiso de Superposición**: Al abrir la app por primera vez, te pedirá permiso para "Mostrar sobre otras aplicaciones". **Debes concederlo** para que aparezca el botón flotante.
-- **Uso**: Una vez concedido, aparecerá un botón naranja en pantalla. Mantén pulsado para transmitir y suelta para detener.
+1. **Instalación:** Debido a que el archivo supera el límite de GitHub (100MB), no puedo subirlo directamente al repositorio. Puedes compilarlo tú mismo usando `flutter build apk --debug` o pedirme que lo genere de nuevo si lo borras.
+2. **Abrir la app:** Busca el icono de **MarcosWalkie** y ábrelo.
+3. **Configurar el Micro USB (Importante):**
+   - Si tienes un micrófono o botón USB, verás un icono de un **enchufe** (🔌) arriba a la derecha. Dale ahí.
+   - Pulsa "MAPEAR" en el botón de hablar, y presiona el botón físico de tu micro.
+   - Pulsa "MAPEAR" en el botón de soltar, y suelta el botón de tu micro.
+   - ¡Ya está! Ahora la app sabe qué botón usar.
+4. **Perfiles:**
+   - La app usa "perfiles" para saber a qué app de Walkie Talkie debe enviar la señal.
+   - Dale al icono del **engranaje** (⚙️) para crear o editar uno.
+   - Solo tienes que poner el nombre y las "acciones" que te diga el manual de tu otra app (ej: Zello).
+5. **A hablar:**
+   - En la pantalla principal, selecciona el perfil que quieras.
+   - Mantén pulsado el **círculo grande central** para hablar, o usa tu botón USB.
+   - Si quieres usarlo mientras usas otras apps, dale a **"BOTÓN FLOTANTE"**.
 
-### 2. Configuración de Intents (Acciones) ⚡
-La app funciona enviando "órdenes" (Intents) al sistema o a otras aplicaciones. En la sección de **Gestión de Perfiles**, puedes configurar:
+¡Y ya está! No tiene más pérdida. Si sale un recuadro amarillo, no te asustes, ya lo hemos arreglado para que quepa todo bien.
 
-- **Acción de Inicio (Start Action)**: Qué orden enviar al pulsar el botón.
-- **Acción de Parada (Stop Action)**: Qué orden enviar al soltar el botón.
-
-#### Ejemplos de Configuración de Intents:
-- **Zello (PTT Estilo Walkie)**:
-  - Start Action: `com.zello.ptt.down`
-  - Stop Action: `com.zello.ptt.up`
-- **Acciones del Sistema (Pruebas)**:
-  - Abrir Ajustes Wi-Fi: `android.settings.WIFI_SETTINGS`
-  - Buscar en Web: `android.intent.action.WEB_SEARCH`
-
-### 3. Permisos Especiales 🛡️
-Además del permiso de superposición, si el dispositivo tiene capas de personalización agresivas (Xiaomi, Huawei, etc.), asegúrate de:
-- Permitir el **Inicio Automático**.
-- Desactivar el **Ahorro de Batería** para MarcosWalkie para evitar que el sistema cierre el servicio del overlay.
-
-## 🛠️ Desarrollo
-
-### Instalación de dependencias
-```bash
-flutter pub get
-```
-
-### Compilación de APK (Manual)
-```bash
-flutter build apk --release
-```
-
-## 🤝 Créditos
-Desarrollado con ❤️ por **PGM** y **PEDROAI**.
-*Dominación intelectual y control total.*
+---
+*Desarrollado con ❤️ por PGM y PEDROAI.*

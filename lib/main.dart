@@ -6,6 +6,7 @@ import 'package:system_alert_window/system_alert_window.dart';
 import 'providers/ptt_provider.dart';
 import 'screens/ptt_screen.dart';
 import 'screens/profile_list_screen.dart';
+import 'screens/usb_mapping_screen.dart';
 import 'widgets/overlay_widget.dart';
 
 @pragma('vm:entry-point')
@@ -93,6 +94,7 @@ class _MarcosWalkieAppState extends State<MarcosWalkieApp> with WidgetsBindingOb
       home: const PTTScreen(),
       routes: {
         '/profiles': (context) => const ProfileListScreen(),
+        // No direct route needed as it's called with arguments, but let's keep it clean
       },
     );
   }

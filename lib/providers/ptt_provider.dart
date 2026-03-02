@@ -9,12 +9,16 @@ class PTTProvider with ChangeNotifier {
   List<PTTProfile> _profiles = [];
   String? _selectedProfileId;
   bool _isTransmitting = false;
+  int? _globalStartKeyCode;
+  int? _globalStopKeyCode;
 
   List<PTTProfile> get profiles => _profiles;
   PTTProfile? get selectedProfile => _profiles.isEmpty 
       ? null 
       : _profiles.firstWhere((p) => p.id == _selectedProfileId, orElse: () => _profiles.first);
   bool get isTransmitting => _isTransmitting;
+  int? get globalStartKeyCode => _globalStartKeyCode;
+  int? get globalStopKeyCode => _globalStopKeyCode;
 
   PTTProvider() {
     loadProfiles();
@@ -62,6 +66,8 @@ class PTTProvider with ChangeNotifier {
       ];
     }
     _selectedProfileId = prefs.getString('selected_profile_id') ?? (_profiles.isNotEmpty ? _profiles.first.id : null);
+    _globalStartKeyCode = prefs.getInt('global_start_key_code');
+    _globalStopKeyCode = prefs.getInt('global_stop_key_code');
     notifyListeners();
   }
 
@@ -71,6 +77,16 @@ class PTTProvider with ChangeNotifier {
     await prefs.setString('ptt_profiles', profilesJson);
     if (_selectedProfileId != null) {
       await prefs.setString('selected_profile_id', _selectedProfileId!);
+    }
+    if (_globalStartKeyCode != null) {
+      await prefs.setInt('global_start_key_code', _globalStartKeyCode!);
+    } else {
+      await prefs.remove('global_start_key_code');
+    }
+    if (_globalStopKeyCode != null) {
+      await prefs.setInt('global_stop_key_code', _globalStopKeyCode!);
+    } else {
+      await prefs.remove('global_stop_key_code');
     }
   }
 
@@ -140,5 +156,12 @@ class PTTProvider with ChangeNotifier {
     );
     try { await intent.launch(); } catch (_) {}
     try { await intent.sendBroadcast(); } catch (_) {}
+  }
+
+  Future<void> setGlobalKeyCodes(int? start, int? stop) async {
+    _globalStartKeyCode = start;
+    _globalStopKeyCode = stop;
+    await saveProfiles();
+    notifyListeners();
   }
 }

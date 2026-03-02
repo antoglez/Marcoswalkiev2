@@ -23,6 +23,7 @@ class _ProfileEditorScreenState extends State<ProfileEditorScreen> {
     _name = widget.profile?.name ?? '';
     _startAction = widget.profile?.startAction ?? '';
     _stopAction = widget.profile?.stopAction ?? '';
+    _stopAction = widget.profile?.stopAction ?? '';
   }
 
   @override

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:system_alert_window/system_alert_window.dart';
 import '../providers/ptt_provider.dart';
+import 'usb_mapping_screen.dart';
 
 // Hecho por PGM y PEDROAI
 class PTTScreen extends StatefulWidget {
@@ -13,6 +15,7 @@ class PTTScreen extends StatefulWidget {
 
 class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -21,12 +24,12 @@ class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMix
       vsync: this,
       duration: const Duration(seconds: 1),
     )..repeat(reverse: true);
-    // Request permissions on init removed as per user request
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -35,51 +38,76 @@ class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMix
     final provider = Provider.of<PTTProvider>(context);
     final selectedProfile = provider.selectedProfile;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MarcosWalkie PTT', style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            tooltip: 'Instrucciones',
-            onPressed: () => _showHelpDialog(context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: 'Ajustes',
-            onPressed: () => Navigator.pushNamed(context, '/profiles'),
-          ),
-        ],
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Theme.of(context).scaffoldBackgroundColor,
-              Theme.of(context).colorScheme.surface,
-            ],
-          ),
+    return RawKeyboardListener(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKey: (RawKeyEvent event) {
+        if (selectedProfile == null) return;
+        
+        final startCode = provider.globalStartKeyCode;
+        final stopCode = provider.globalStopKeyCode;
+
+        if (startCode != null && event.logicalKey.keyId == startCode) {
+          if (event is RawKeyDownEvent && !provider.isTransmitting) {
+            provider.startTransmission();
+          }
+        }
+        
+        if (startCode != null && event.logicalKey.keyId == startCode && event is RawKeyUpEvent) {
+          provider.stopTransmission();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('MarcosWalkie PTT', style: TextStyle(fontWeight: FontWeight.bold)),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.usb_rounded),
+              tooltip: 'Configurar USB PTT',
+              onPressed: () => _showUSBSettings(context, provider),
+            ),
+            IconButton(
+              icon: const Icon(Icons.help_outline),
+              tooltip: 'Instrucciones',
+              onPressed: () => _showHelpDialog(context),
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Ajustes',
+              onPressed: () => Navigator.pushNamed(context, '/profiles'),
+            ),
+          ],
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              _buildProfileSelector(provider),
-              const Spacer(),
-              _buildPTTButton(provider),
-              const SizedBox(height: 30),
-              _buildOverlayControls(context),
-              const Spacer(),
-              _buildStatusIndicator(provider),
-              const SizedBox(height: 10),
-              const Text('Hecho por PGM y PEDROAI', style: TextStyle(color: Colors.white24, fontSize: 10)),
-              const SizedBox(height: 40),
-            ],
+        extendBodyBehindAppBar: true,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Theme.of(context).scaffoldBackgroundColor,
+                Theme.of(context).colorScheme.surface,
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                _buildProfileSelector(provider),
+                const Spacer(),
+                _buildPTTButton(provider),
+                const SizedBox(height: 30),
+                _buildOverlayControls(context),
+                const Spacer(),
+                _buildStatusIndicator(provider),
+                const SizedBox(height: 10),
+                const Text('Hecho por PGM y PEDROAI', style: TextStyle(color: Colors.white24, fontSize: 10)),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),
@@ -87,8 +115,10 @@ class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMix
   }
 
   Widget _buildOverlayControls(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 12,
+      runSpacing: 12,
       children: [
         ElevatedButton.icon(
           icon: const Icon(Icons.layers),
@@ -105,7 +135,7 @@ class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMix
                SystemAlertWindow.showSystemWindow(
                   height: 150, 
                   width: 150,
-                  gravity: SystemWindowGravity.TOP, // Changed from CENTER
+                  gravity: SystemWindowGravity.TOP,
                   prefMode: SystemWindowPrefMode.OVERLAY,
                   layoutParamFlags: [
                     SystemWindowFlags.FLAG_NOT_FOCUSABLE,
@@ -250,6 +280,77 @@ class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMix
     );
   }
 
+  void _showUSBSettings(BuildContext context, PTTProvider provider) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF1E1E1E),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('CONFIGURACIÓN USB GENERAL', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+              const SizedBox(height: 8),
+              const Text('Configura aquí tus botones externos para todos los perfiles.', style: TextStyle(color: Colors.white54, fontSize: 12)),
+              const SizedBox(height: 24),
+              _buildModalMappingButton(
+                context, 
+                'BOTÓN PUSH (HABLAR)', 
+                provider.globalStartKeyCode,
+                (code) async {
+                  await provider.setGlobalKeyCodes(code, provider.globalStopKeyCode);
+                  setModalState(() {});
+                }
+              ),
+              const SizedBox(height: 12),
+              _buildModalMappingButton(
+                context, 
+                'BOTÓN RELEASE (SOLTAR)', 
+                provider.globalStopKeyCode,
+                (code) async {
+                  await provider.setGlobalKeyCodes(provider.globalStartKeyCode, code);
+                  setModalState(() {});
+                }
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('CERRAR', style: TextStyle(color: Colors.blueAccent)),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModalMappingButton(BuildContext context, String label, int? code, Function(int) onCaptured) {
+    return ListTile(
+      tileColor: Colors.white.withOpacity(0.05),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      title: Text(label, style: const TextStyle(fontSize: 14)),
+      subtitle: Text(code == null ? 'No configurado' : 'Código: $code', 
+        style: TextStyle(color: code == null ? Colors.white54 : Colors.greenAccent)),
+      trailing: ElevatedButton(
+        onPressed: () async {
+          final result = await Navigator.push<int>(
+            context,
+            MaterialPageRoute(builder: (context) => USBMappingScreen(title: label)),
+          );
+          if (result != null) onCaptured(result);
+        },
+        child: const Text('MAPEAR'),
+      ),
+    );
+  }
+
   void _showHelpDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -262,26 +363,27 @@ class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMix
             Text('Instrucciones'),
           ],
         ),
-        content: const SingleChildScrollView(
+        content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('1. Configuración:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
-              Text('Ve a ajustes (icono ⚙️) para crear perfiles con los "Intents" de tu aplicación de Walkie Talkie.'),
+              Text('1. Perfiles:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+              Text('Usa el icono de ajustes (⚙️) para configurar los "Intents" de cada aplicación de Walkie Talkie.'),
               SizedBox(height: 10),
-              Text('2. Uso Directo:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+              Text('2. Micrófono USB:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+              Text('Configura tus botones USB pulsando el icono del enchufe (🔌). Este ajuste es global para todos los perfiles.'),
+              SizedBox(height: 10),
+              Text('3. Uso Directo:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
               Text('Mantén pulsado el círculo central para hablar. Al soltar, se enviará la señal de detención.'),
               SizedBox(height: 10),
-              Text('3. Botón Flotante:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
-              Text('Pulsa "BOTÓN FLOTANTE" para usar el PTT sobre otras aplicaciones. La primera vez se te pedirá permiso de superposición.'),
+              Text('4. Botón Flotante:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+              Text('Pulsa "BOTÓN FLOTANTE" para usar el PTT sobre otras aplicaciones. Requiere permiso de superposición.'),
               SizedBox(height: 10),
-              Text('4. Cierre:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
-              Text('Al cerrar o deslizar la app principal, la burbuja flotante desaparecerá automáticamente.'),
+              Text('5. Cierre:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+              Text('Al cerrar la app, la burbuja flotante desaparecerá automáticamente.'),
               SizedBox(height: 20),
-              Divider(color: Colors.white10),
-              SizedBox(height: 10),
-              Center(child: Text('Software desarrollado por PGM y PEDROAI.', style: TextStyle(fontSize: 10, color: Colors.blueAccent))),
+              _buildFooter(),
             ],
           ),
         ),
@@ -293,5 +395,15 @@ class _PTTScreenState extends State<PTTScreen> with SingleTickerProviderStateMix
         ],
       ),
     );
+  }
+
+  Widget _buildFooter() {
+     return const Column(
+       children: [
+         Divider(color: Colors.white10),
+         SizedBox(height: 10),
+         Center(child: Text('Software desarrollado por PGM y PEDROAI.', style: TextStyle(fontSize: 10, color: Colors.blueAccent))),
+       ],
+     );
   }
 }
