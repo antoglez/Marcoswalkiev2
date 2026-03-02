@@ -1,5 +1,13 @@
 # MarcosWalkie PTT v2 🚀
 
+<p align="center">
+  <img src="assets/images/m1.jpeg" width="200" />
+  <img src="assets/images/m2.jpeg" width="200" />
+  <img src="assets/images/m3.jpeg" width="200" />
+  <img src="assets/images/m4.jpeg" width="200" />
+</p>
+
+
 MarcosWalkie es una aplicación de Push-To-Talk (PTT) diseñada para centralizar y facilitar el uso de múltiples aplicaciones de Walkie Talkie (como Zello, etc.) mediante botones externos y una interfaz simplificada.
 
 ## 🛠 Especificaciones Técnicas
